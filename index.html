@@ -3,14 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
 <title>VCT 2027 Pacific Kickoff: South Asia Open Qualifier · Results Tracker</title>
 <meta name="description" content="Unofficial community results tracker for the VCT 2027 Pacific Kickoff South Asia Open Qualifier: format, Swiss standings, knockout results and teams.">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
 :root{
   --bg:#0d1117; --panel:#151b23; --panel2:#1c2430; --line:#2a3441;
   --text:#e6edf3; --muted:#8b98a8; --accent:#2dd4bf; --accent-dim:rgba(45,212,191,.14);
   --win:#4ade80; --win-dim:rgba(74,222,128,.13); --loss:#f87171; --loss-dim:rgba(248,113,113,.12);
-  --gold:#facc15; --radius:12px;
+  --gold:#facc15; --radius:12px; --navbg:rgba(13,17,23,.92); color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme=dark]){
+    --bg:#f6f8fa; --panel:#ffffff; --panel2:#eef1f5; --line:#d5dbe2;
+    --text:#1f2328; --muted:#59636e; --accent:#0d8a7f; --accent-dim:rgba(13,138,127,.11);
+    --win:#1a7f37; --win-dim:rgba(26,127,55,.11); --loss:#c4232e; --loss-dim:rgba(196,35,46,.09);
+    --gold:#9a6700; --navbg:rgba(246,248,250,.92); color-scheme:light;
+  }
+}
+:root[data-theme=light]{
+    --bg:#f6f8fa; --panel:#ffffff; --panel2:#eef1f5; --line:#d5dbe2;
+    --text:#1f2328; --muted:#59636e; --accent:#0d8a7f; --accent-dim:rgba(13,138,127,.11);
+    --win:#1a7f37; --win-dim:rgba(26,127,55,.11); --loss:#c4232e; --loss-dim:rgba(196,35,46,.09);
+    --gold:#9a6700; --navbg:rgba(246,248,250,.92); color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);
@@ -24,7 +42,7 @@ h1{font-size:clamp(22px,5.5vw,32px);line-height:1.2;margin:6px 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--muted)}
 .chip b{color:var(--text);font-weight:600}
-nav{position:sticky;top:0;z-index:5;background:rgba(13,17,23,.92);backdrop-filter:blur(8px);
+nav{position:sticky;top:0;z-index:5;background:var(--navbg);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);margin:0 -14px 18px;padding:0 14px}
 .tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
@@ -91,13 +109,19 @@ details .inner{padding:0 12px 12px}
 .subtab[aria-selected=true] .cnt{color:var(--accent);opacity:1}
 .rpanel[hidden]{display:none}
 .rpanel>.note{margin:4px 0 10px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.themebtn{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);color:var(--text);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.themebtn:focus-visible,.tab:focus-visible,.subtab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.themebtn svg{width:16px;height:16px}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <div class="eyebrow">Community results tracker · Unofficial</div>
+  <div class="hdr"><div class="eyebrow">Community results tracker · Unofficial</div>
+  <button class="themebtn" id="themebtn" type="button" aria-label="Change colour theme"></button></div>
   <h1>VCT 2027: Pacific Kickoff<br>South Asia – Open Qualifier</h1>
   <div class="sub">Online · 17–20 November 2026 · Organised by JioBLAST for Riot Games</div>
   <div class="chips">
@@ -461,6 +485,26 @@ const q = swissTeams.filter(t=>status(t)==="q").length;
 [[allTeams.length,"Teams"],[64,"In Swiss Stage"],[alive,"Still alive"],[q+" / 8","Qualified"]].forEach(([v,l])=>{
   const s=el("div","stat"); s.append(el("div","v",v), el("div","l",l)); $("#stats").append(s);
 });
+
+/* Theme toggle: Auto -> Light -> Dark */
+{
+  const btn = $("#themebtn"), root = document.documentElement;
+  const icons = {
+    auto:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>',
+    light:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+    dark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
+  };
+  const names = {auto:"Auto", light:"Light", dark:"Dark"};
+  const setTheme = t => {
+    if (t==="auto") delete root.dataset.theme; else root.dataset.theme = t;
+    btn.innerHTML = icons[t] + "<span>" + names[t] + "</span>";
+    btn.title = "Theme: " + names[t] + " (tap to change)";
+    try { t==="auto" ? localStorage.removeItem("theme") : localStorage.setItem("theme", t); } catch(e){}
+  };
+  let cur = root.dataset.theme || "auto";
+  setTheme(cur);
+  btn.addEventListener("click", ()=>{ cur = {auto:"light", light:"dark", dark:"auto"}[cur]; setTheme(cur); });
+}
 
 /* Tabs */
 const tabs=[...document.querySelectorAll(".tab")];
