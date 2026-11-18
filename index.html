@@ -82,6 +82,15 @@ details .inner{padding:0 12px 12px}
 .teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px}
 .team{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .team span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 10px}
+.subtabs::-webkit-scrollbar{display:none}
+.subtab{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:var(--panel);border:1px solid var(--line);
+  color:var(--muted);border-radius:10px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}
+.subtab .cnt{font-size:11px;font-weight:600;opacity:.8}
+.subtab[aria-selected=true]{background:var(--accent-dim);border-color:var(--accent);color:var(--text)}
+.subtab[aria-selected=true] .cnt{color:var(--accent);opacity:1}
+.rpanel[hidden]{display:none}
+.rpanel>.note{margin:4px 0 10px}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 </style>
 </head>
@@ -145,7 +154,8 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 
 <!-- SWISS -->
 <section id="swiss" hidden>
-  <h2>Standings</h2>
+  <div id="rounds"></div>
+  <div class="rpanel" id="standingsPanel">
   <div class="legend">
     <span><span class="badge b-q">Q</span> Qualified for Playoffs</span>
     <span><span class="badge b-out">OUT</span> Eliminated</span>
@@ -154,7 +164,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     <thead><tr><th>#</th><th>Team</th><th>W-L</th><th>Status</th></tr></thead>
     <tbody id="standings"></tbody>
   </table></div>
-  <div id="rounds"></div>
+  </div>
 </section>
 
 <!-- KNOCKOUT -->
@@ -188,7 +198,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
    To add a Swiss round, put its matches in that round's "matches" list.
    ===================================================================== */
 const DATA = {
-  "updated": "18 Nov 2026, 3:56 PM IST",
+  "updated": "18 Nov 2026, 4:08 PM IST",
   "r256": [
     { "a": "Libertes Esports", "b": "DarkxLight New gen", "winner": 2, "score": "" },
     { "a": "Cl0wns", "b": "ChaosHunters", "winner": 2, "score": "" },
@@ -293,13 +303,13 @@ const DATA = {
         { "a": "Fambruh", "b": "Xcalibur", "winner": 1, "score": "13-6" },
         { "a": "TIMEKEEPERS ACADEMY", "b": "SupleXure", "winner": 0, "score": "" },
         { "a": "Loadshedding", "b": "DarkxLight New gen", "winner": 1, "score": "13-7" },
-        { "a": "Team Hope", "b": "STAR CHASERS", "winner": 0, "score": "" },
+        { "a": "Team Hope", "b": "STAR CHASERS", "winner": 1, "score": "13-4" },
         { "a": "NYNE", "b": "PROPHETIC", "winner": 2, "score": "13-1" },
         { "a": "EvilRage Esports", "b": "Lore Accurate", "winner": 2, "score": "13-0 (FF)" },
         { "a": "NEWGEN ESPORTS", "b": "Humble Gods", "winner": 1, "score": "13-0 (FF)" },
         { "a": "Genesis Guild", "b": "Bengal Mafia", "winner": 0, "score": "" },
         { "a": "The Winner Effect", "b": "Team Rush", "winner": 1, "score": "13-5" },
-        { "a": "Only Frens", "b": "DarkxLight Esports", "winner": 0, "score": "" },
+        { "a": "Only Frens", "b": "DarkxLight Esports", "winner": 2, "score": "13-11" },
         { "a": "上自", "b": "GodLike Esports", "winner": 2, "score": "13-0" },
         { "a": "RedViperz", "b": "Trigger Point Esports", "winner": 0, "score": "" },
         { "a": "Novena", "b": "Arrancar", "winner": 0, "score": "" },
@@ -383,13 +393,38 @@ order.forEach((t,i)=>{
   tb.append(tr);
 });
 
-/* Swiss rounds */
+/* Swiss rounds as tabs */
 const rounds = $("#rounds");
+const bar = el("div","subtabs"); bar.setAttribute("role","tablist"); rounds.append(bar);
+const panels = [];
+/* Standings is the first sub-tab */
+{
+  const sp = $("#standingsPanel");
+  const nq = swissTeams.filter(t=>status(t)==="q").length;
+  const b = el("button","subtab"); b.setAttribute("role","tab");
+  b.append(el("span","","Standings")); b.append(el("span","cnt", `${nq}/8 qualified`));
+  const idx = panels.length; b.addEventListener("click",()=>pick(idx)); bar.append(b);
+  sp.remove(); rounds.append(sp); panels.push(sp);
+}
+const firstRound = panels.length;
 DATA.swiss.forEach((r,i)=>{
-  const h = el("h2","",r.name); h.append(el("span","note"," · Bo"+r.bestOf)); rounds.append(h);
-  if (!r.matches.length){ rounds.append(el("div","empty","Pairings not announced yet")); return; }
-  const g = el("div","matches"); r.matches.forEach(m=>g.append(matchCard(m,r.bestOf))); rounds.append(g);
+  const done = r.matches.filter(m=>m.winner).length;
+  const b = el("button","subtab"); b.setAttribute("role","tab");
+  b.append(el("span","",r.name));
+  b.append(el("span","cnt", r.matches.length ? `${done}/${r.matches.length}` : "TBD"));
+  b.addEventListener("click",()=>pick(firstRound+i)); bar.append(b);
+  const p = el("div","rpanel");
+  p.append(el("p","note", r.matches.length ? `Bo${r.bestOf} · ${done} of ${r.matches.length} matches played` : `Bo${r.bestOf}`));
+  if (!r.matches.length) p.append(el("div","empty","Pairings not announced yet"));
+  else { const g = el("div","matches"); r.matches.forEach(m=>g.append(matchCard(m,r.bestOf))); p.append(g); }
+  rounds.append(p); panels.push(p);
 });
+function pick(i){
+  [...bar.children].forEach((b,j)=>b.setAttribute("aria-selected", j===i));
+  panels.forEach((p,j)=>p.hidden = j!==i);
+}
+let cur = firstRound; DATA.swiss.forEach((r,i)=>{ if (r.matches.length) cur = firstRound+i; });
+pick(cur);
 
 /* Knockout */
 DATA.r128.forEach(m=>$("#r128").append(matchCard(m,3)));
