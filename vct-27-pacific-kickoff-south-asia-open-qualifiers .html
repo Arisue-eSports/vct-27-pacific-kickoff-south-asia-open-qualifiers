@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VCT 2027 Pacific Kickoff: South Asia Open Qualifier · Results Tracker</title>
+<meta name="description" content="Unofficial community results tracker for the VCT 2027 Pacific Kickoff South Asia Open Qualifier: format, Swiss standings, knockout results and teams.">
+<style>
+:root{
+  --bg:#0d1117; --panel:#151b23; --panel2:#1c2430; --line:#2a3441;
+  --text:#e6edf3; --muted:#8b98a8; --accent:#2dd4bf; --accent-dim:rgba(45,212,191,.14);
+  --win:#4ade80; --win-dim:rgba(74,222,128,.13); --loss:#f87171; --loss-dim:rgba(248,113,113,.12);
+  --gold:#facc15; --radius:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans CJK SC",sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:900px;margin:0 auto;padding:0 14px 60px}
+header{padding:28px 0 14px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-size:clamp(22px,5.5vw,32px);line-height:1.2;margin:6px 0 10px}
+.sub{color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--muted)}
+.chip b{color:var(--text);font-weight:600}
+nav{position:sticky;top:0;z-index:5;background:rgba(13,17,23,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);margin:0 -14px 18px;padding:0 14px}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:0;color:var(--muted);font:inherit;font-weight:600;padding:13px 12px;cursor:pointer;
+  border-bottom:2px solid transparent;white-space:nowrap}
+.tab[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+section[hidden]{display:none}
+h2{font-size:19px;margin:26px 0 10px}
+h3{font-size:15px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
+.stage{display:grid;grid-template-columns:auto 1fr;gap:4px 12px}
+.stage .num{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);color:var(--accent);
+  display:grid;place-items:center;font-weight:700;font-size:14px;grid-row:span 2}
+.stage .title{font-weight:700}
+.stage ul{margin:4px 0 0;padding-left:18px;color:var(--muted)}
+.stage ul li{margin:2px 0}
+.maps{display:flex;flex-wrap:wrap;gap:8px}
+.map{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-weight:600}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.note{font-size:13px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:6px 0 4px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.stat .v{font-size:24px;font-weight:800}
+.stat .l{font-size:12px;color:var(--muted)}
+/* matches */
+.matches{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px}
+.match{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.match .row{display:flex;align-items:center;gap:8px;padding:8px 12px}
+.match .row+.row{border-top:1px solid var(--line)}
+.match .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.match .res{font-size:12px;font-weight:700;min-width:22px;text-align:right}
+.row.w{background:var(--win-dim)} .row.w .name{font-weight:700} .row.w .res{color:var(--win)}
+.row.l .name{color:var(--muted)} .row.l .res{color:var(--loss)}
+.match .meta{font-size:11px;color:var(--muted);padding:4px 12px;background:var(--panel2);display:flex;justify-content:space-between}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:18px;text-align:center;color:var(--muted);font-size:14px}
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--panel2);color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;position:sticky;top:0}
+td.n{color:var(--muted);width:1%}
+td.rec{font-variant-numeric:tabular-nums;font-weight:700}
+tr.q td{background:var(--win-dim)} tr.out td{color:var(--muted)}
+.badge{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px}
+.b-q{background:var(--win-dim);color:var(--win)} .b-out{background:var(--loss-dim);color:var(--loss)}
+.b-live{background:var(--accent-dim);color:var(--accent)} .b-gold{background:rgba(250,204,21,.15);color:var(--gold)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;font-size:13px;color:var(--muted)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px}
+details summary{cursor:pointer;padding:12px 16px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details summary::after{content:"＋";color:var(--muted)}
+details[open] summary::after{content:"－"}
+details .inner{padding:0 12px 12px}
+.search{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit;margin-bottom:12px}
+.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px}
+.team{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.team span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Community results tracker · Unofficial</div>
+  <h1>VCT 2027: Pacific Kickoff<br>South Asia – Open Qualifier</h1>
+  <div class="sub">Online · 17–20 November 2026 · Organised by JioBLAST for Riot Games</div>
+  <div class="chips">
+    <span class="chip"><b id="c-teams">143</b> teams</span>
+    <span class="chip"><b>8</b> advance to Playoffs</span>
+    <span class="chip">Server <b>Mumbai</b></span>
+    <span class="chip">Updated <b id="c-upd"></b></span>
+  </div>
+</header>
+
+<nav><div class="tabs" role="tablist">
+  <button class="tab" role="tab" data-t="overview">Overview</button>
+  <button class="tab" role="tab" data-t="swiss">Swiss Stage</button>
+  <button class="tab" role="tab" data-t="knockout">Knockout Stage</button>
+  <button class="tab" role="tab" data-t="teams">Teams</button>
+</div></nav>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="stats" id="stats"></div>
+
+  <h2>Format</h2>
+  <div class="card stage">
+    <div class="num">1</div><div class="title">Knockout Stage <span class="note">· 17 Nov</span></div>
+    <ul><li>Single elimination</li><li>Round of 256: Bo1</li><li>Round of 128: Bo3</li><li>64 winners advance to the Swiss Stage</li></ul>
+  </div>
+  <div class="card stage">
+    <div class="num">2</div><div class="title">Swiss Stage <span class="note">· 18–20 Nov</span></div>
+    <ul><li>64 teams, 6 rounds</li><li>Rounds 1–2: Bo1 · Round 3 onwards: Bo3</li>
+        <li>4-0 and 5-1 teams advance to the Playoffs (8 teams)</li><li>Teams with 2 losses are eliminated</li></ul>
+  </div>
+  <div class="card stage">
+    <div class="num">3</div><div class="title">Qualifier Playoffs <span class="note">· 23–29 Nov</span></div>
+    <ul><li>8-team double elimination, Bo3</li><li>Top 2 qualify for the Pacific Kickoff Last Chance Qualifier</li></ul>
+  </div>
+
+  <h2>Map Pool</h2>
+  <div class="maps" id="maps"></div>
+
+  <h2>Map Veto</h2>
+  <div class="card kv">
+    <dt>Bo1</dt><dd>A ban, B ban, A ban, B ban, A ban, B ban → remaining map. Team A picks side.</dd>
+    <dt>Bo3</dt><dd>A ban, B ban, A pick, B pick, A ban, B ban → decider. Team A picks decider side.</dd>
+  </div>
+
+  <h2>Eligibility</h2>
+  <div class="card kv">
+    <dt>Countries</dt><dd>India, Nepal, Bhutan, Bangladesh, Sri Lanka</dd>
+    <dt>Roster</dt><dd>At least 3 of 5 players from the team's home country</dd>
+    <dt>Rank</dt><dd>Ascendant 1 or higher in the past 180 days</dd>
+    <dt>Age</dt><dd>Over 17</dd>
+  </div>
+</section>
+
+<!-- SWISS -->
+<section id="swiss" hidden>
+  <h2>Standings</h2>
+  <div class="legend">
+    <span><span class="badge b-q">Q</span> Qualified for Playoffs</span>
+    <span><span class="badge b-out">OUT</span> Eliminated</span>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>#</th><th>Team</th><th>W-L</th><th>Status</th></tr></thead>
+    <tbody id="standings"></tbody>
+  </table></div>
+  <div id="rounds"></div>
+</section>
+
+<!-- KNOCKOUT -->
+<section id="knockout" hidden>
+  <h2>Round of 128 <span class="note">· Bo3</span></h2>
+  <div class="matches" id="r128"></div>
+  <h2>Round of 256 <span class="note">· Bo1</span></h2>
+  <p class="note" id="r256note"></p>
+  <div class="matches" id="r256"></div>
+</section>
+
+<!-- TEAMS -->
+<section id="teams" hidden>
+  <h2>All teams</h2>
+  <input class="search" id="search" type="search" placeholder="Search teams…" aria-label="Search teams">
+  <div class="teams" id="teamlist"></div>
+</section>
+
+<footer>
+  Unofficial fan-made tracker, not affiliated with Riot Games or JioBLAST. Results are compiled from the official bracket sheets;
+  for official information see <a href="https://jioblast.com/vctsakickoff" rel="noopener">jioblast.com/vctsakickoff</a>.
+</footer>
+</div>
+
+<script>
+/* =====================================================================
+   TOURNAMENT DATA — this is the only part you need to edit.
+   Each match: { "a": "Team A", "b": "Team B", "winner": 0, "score": "" }
+     winner: 0 = not played yet, 1 = Team A won, 2 = Team B won
+     score:  optional text, e.g. "13-9" (Bo1) or "2-1" (Bo3)
+   To add a Swiss round, put its matches in that round's "matches" list.
+   ===================================================================== */
+const DATA = {
+  "updated": "18 Nov 2026",
+  "r256": [
+    { "a": "Libertes Esports", "b": "DarkxLight New gen", "winner": 2, "score": "" },
+    { "a": "Cl0wns", "b": "ChaosHunters", "winner": 2, "score": "" },
+    { "a": "STAR CHASERS", "b": "LASTADE ESPORTS", "winner": 1, "score": "" },
+    { "a": "H7XON REIGN", "b": "Pandey dai ko paltan", "winner": 2, "score": "" },
+    { "a": "Mangalore Mayhem", "b": "ZRP Academy", "winner": 1, "score": "" },
+    { "a": "Reckless Esports", "b": "FTW Esports", "winner": 1, "score": "" },
+    { "a": "NULL VEIN", "b": "Nononsense", "winner": 1, "score": "" },
+    { "a": "Zendius", "b": "Genesis Guild", "winner": 2, "score": "" },
+    { "a": "Trigger Point Esports", "b": "Ninja Turtles", "winner": 1, "score": "" },
+    { "a": "WHE CRACKED", "b": "vvind", "winner": 1, "score": "" },
+    { "a": "Federal Reapers", "b": "cptsaveaho", "winner": 2, "score": "" },
+    { "a": "Loadshedding", "b": "whay", "winner": 1, "score": "" },
+    { "a": "Soul catchers", "b": "Tigger Point Academy", "winner": 2, "score": "" },
+    { "a": "Baiters", "b": "CheemsEsports", "winner": 2, "score": "" },
+    { "a": "Bluelock", "b": "ONSLAUGHT", "winner": 1, "score": "" }
+  ],
+  "r128": [
+    { "a": "Bengal Mafia", "b": "HEAVENLY SINS", "winner": 1, "score": "" },
+    { "a": "KNULLSHIFTERS", "b": "Revenant XSpark", "winner": 2, "score": "" },
+    { "a": "ZEXAR ESPORTS", "b": "Team Phoenix", "winner": 1, "score": "" },
+    { "a": "AvocadosAtLaw", "b": "Comeback Specialist", "winner": 1, "score": "" },
+    { "a": "Strawhats", "b": "FNSes Kittens", "winner": 2, "score": "" },
+    { "a": "Immortal De Campeons", "b": "Arrancar", "winner": 2, "score": "" },
+    { "a": "DEMON HUNTERS", "b": "CARRY US PLEASE", "winner": 2, "score": "" },
+    { "a": "Team strikers", "b": "上自", "winner": 2, "score": "" },
+    { "a": "4TERMINATORS GLOBAL", "b": "DarkxLight Esports", "winner": 2, "score": "" },
+    { "a": "REVENANT", "b": "Dieversity", "winner": 1, "score": "" },
+    { "a": "GOC Esports", "b": "Octane Gaming", "winner": 1, "score": "" },
+    { "a": "VØID REAPERS ESPORTS", "b": "DarkxLight New gen", "winner": 2, "score": "" },
+    { "a": "Zeroplus Esports", "b": "Espada", "winner": 1, "score": "" },
+    { "a": "LynSam Esports", "b": "Backlog Warriors", "winner": 2, "score": "" },
+    { "a": "Team XII", "b": "The Wonderfools", "winner": 1, "score": "" },
+    { "a": "Ryusei Tridents Rei", "b": "Ganggg", "winner": 2, "score": "" },
+    { "a": "Team Hxpe", "b": "SupleXure", "winner": 2, "score": "" },
+    { "a": "S1N", "b": "RedViperz", "winner": 2, "score": "" },
+    { "a": "ChaosHunters", "b": "SIGN Esports", "winner": 2, "score": "" },
+    { "a": "Fambruh", "b": "Sexi in Dyslexia", "winner": 1, "score": "" },
+    { "a": "STAR CHASERS", "b": "oblIXIq", "winner": 1, "score": "" },
+    { "a": "Triple Ricx", "b": "Humble Gods", "winner": 2, "score": "" },
+    { "a": "Team Rush", "b": "Blatants", "winner": 1, "score": "" },
+    { "a": "Pandey dai ko paltan", "b": "TEAM ACHIEVERS", "winner": 2, "score": "" },
+    { "a": "Mangalore Mayhem", "b": "Disasterclass", "winner": 1, "score": "" },
+    { "a": "Batti Balyo", "b": "Only Frens", "winner": 2, "score": "" },
+    { "a": "Rancor Esports", "b": "Valx Esports", "winner": 2, "score": "" },
+    { "a": "YeahWeLost", "b": "CHIRANJEEVI", "winner": 1, "score": "" },
+    { "a": "Reckless Esports", "b": "Team Aimless", "winner": 1, "score": "" },
+    { "a": "NULL VEIN", "b": "Novena", "winner": 2, "score": "" },
+    { "a": "Spiffy Esports", "b": "Genesis Guild", "winner": 2, "score": "" },
+    { "a": "Damal Dumil", "b": "Stupefy", "winner": 1, "score": "" },
+    { "a": "T69", "b": "Aevon", "winner": 1, "score": "" },
+    { "a": "Dark Kings", "b": "NEWGEN ESPORTS", "winner": 2, "score": "" },
+    { "a": "Bait B Plant CT", "b": "Trigger Point Esports", "winner": 2, "score": "" },
+    { "a": "RANKERS", "b": "jackboys", "winner": 1, "score": "" },
+    { "a": "The Winner Effect", "b": "VINCIO ESPORTS", "winner": 1, "score": "" },
+    { "a": "GrownAhhMen", "b": "TIMEKEEPERS ACADEMY", "winner": 2, "score": "" },
+    { "a": "Ryusei Tridens Samurai", "b": "Bleed Blue Gaming", "winner": 2, "score": "" },
+    { "a": "THE IGNYTORS", "b": "Skyrads Whiff Masters", "winner": 1, "score": "" },
+    { "a": "KANI9E", "b": "Lexious Gaming", "winner": 2, "score": "" },
+    { "a": "WHE CRACKED", "b": "cptsaveaho", "winner": 1, "score": "" },
+    { "a": "OPHENZE", "b": "MGX eSPORTS", "winner": 2, "score": "" },
+    { "a": "Arcis eSports", "b": "Lore Accurate", "winner": 2, "score": "" },
+    { "a": "BlackOrder", "b": "WhOOps", "winner": 1, "score": "" },
+    { "a": "Bankai", "b": "Shores End", "winner": 1, "score": "" },
+    { "a": "Team Instinct", "b": "DDFrnds", "winner": 1, "score": "" },
+    { "a": "Loadshedding", "b": "JU GLADIATORS", "winner": 1, "score": "" },
+    { "a": "Armaros", "b": "Noir", "winner": 1, "score": "" },
+    { "a": "PROPHETIC", "b": "ALMOST EMPLOYED", "winner": 1, "score": "" },
+    { "a": "Golden Dawn", "b": "Helix Esports", "winner": 1, "score": "" },
+    { "a": "NTG Esports", "b": "Xcrew", "winner": 2, "score": "" },
+    { "a": "ARAN ESPORTS", "b": "RAVENGERS", "winner": 1, "score": "" },
+    { "a": "Team Hope", "b": "QUIET ESPORTS", "winner": 1, "score": "" },
+    { "a": "Tigger Point Academy", "b": "NYNE", "winner": 2, "score": "" },
+    { "a": "Open Up The Skye", "b": "Xcalibur", "winner": 2, "score": "" },
+    { "a": "Nearest Bustand", "b": "EvilRage Esports", "winner": 2, "score": "" },
+    { "a": "KRuX eSports", "b": "Kryon Esports", "winner": 2, "score": "" },
+    { "a": "Null Order", "b": "CheemsEsports", "winner": 2, "score": "" },
+    { "a": "We throw 5v1s", "b": "Vision Esports", "winner": 2, "score": "" },
+    { "a": "BeyondMeasures", "b": "Bluelock", "winner": 1, "score": "" },
+    { "a": "ZENO", "b": "Dark Kings Kuja", "winner": 1, "score": "" },
+    { "a": "EVERGLADE", "b": "GodLike Esports", "winner": 2, "score": "" },
+    { "a": "Alt F4 Crew", "b": "Reborn Leaf", "winner": 2, "score": "" }
+  ],
+  "swiss": [
+    {
+      "name": "Round 1",
+      "bestOf": 1,
+      "matches": [
+        { "a": "Revenant XSpark", "b": "Valx Esports", "winner": 0, "score": "" },
+        { "a": "Ganggg", "b": "Zeroplus Esports", "winner": 0, "score": "" },
+        { "a": "TEAM ACHIEVERS", "b": "Backlog Warriors", "winner": 0, "score": "" },
+        { "a": "Damal Dumil", "b": "ARAN ESPORTS", "winner": 0, "score": "" },
+        { "a": "Vision Esports", "b": "ZENO", "winner": 0, "score": "" },
+        { "a": "GOC Esports", "b": "Team XII", "winner": 0, "score": "" },
+        { "a": "Kryon Esports", "b": "T69", "winner": 0, "score": "" },
+        { "a": "CheemsEsports", "b": "THE IGNYTORS", "winner": 0, "score": "" },
+        { "a": "Golden Dawn", "b": "AvocadosAtLaw", "winner": 0, "score": "" },
+        { "a": "SIGN Esports", "b": "Xcrew", "winner": 0, "score": "" },
+        { "a": "ZEXAR ESPORTS", "b": "Mangalore Mayhem", "winner": 0, "score": "" },
+        { "a": "YeahWeLost", "b": "Bankai", "winner": 0, "score": "" },
+        { "a": "Bleed Blue Gaming", "b": "Team Instinct", "winner": 0, "score": "" },
+        { "a": "Fambruh", "b": "Xcalibur", "winner": 0, "score": "" },
+        { "a": "TIMEKEEPERS ACADEMY", "b": "SupleXure", "winner": 0, "score": "" },
+        { "a": "Loadshedding", "b": "DarkxLight New gen", "winner": 0, "score": "" },
+        { "a": "Team Hope", "b": "STAR CHASERS", "winner": 0, "score": "" },
+        { "a": "NYNE", "b": "PROPHETIC", "winner": 0, "score": "" },
+        { "a": "EvilRage Esports", "b": "Lore Accurate", "winner": 0, "score": "" },
+        { "a": "NEWGEN ESPORTS", "b": "Humble Gods", "winner": 0, "score": "" },
+        { "a": "Genesis Guild", "b": "Bengal Mafia", "winner": 0, "score": "" },
+        { "a": "The Winner Effect", "b": "Team Rush", "winner": 0, "score": "" },
+        { "a": "Only Frens", "b": "DarkxLight Esports", "winner": 0, "score": "" },
+        { "a": "上自", "b": "GodLike Esports", "winner": 0, "score": "" },
+        { "a": "RedViperz", "b": "Trigger Point Esports", "winner": 0, "score": "" },
+        { "a": "Novena", "b": "Arrancar", "winner": 0, "score": "" },
+        { "a": "FNSes Kittens", "b": "RANKERS", "winner": 0, "score": "" },
+        { "a": "Lexious Gaming", "b": "CARRY US PLEASE", "winner": 0, "score": "" },
+        { "a": "Reborn Leaf", "b": "BlackOrder", "winner": 0, "score": "" },
+        { "a": "REVENANT", "b": "Reckless Esports", "winner": 0, "score": "" },
+        { "a": "Armaros", "b": "MGX eSPORTS", "winner": 0, "score": "" },
+        { "a": "BeyondMeasures", "b": "WHE CRACKED", "winner": 0, "score": "" }
+      ]
+    },
+    {
+      "name": "Round 2",
+      "bestOf": 1,
+      "matches": []
+    },
+    {
+      "name": "Round 3",
+      "bestOf": 3,
+      "matches": []
+    },
+    {
+      "name": "Round 4",
+      "bestOf": 3,
+      "matches": []
+    },
+    {
+      "name": "Round 5",
+      "bestOf": 3,
+      "matches": []
+    },
+    {
+      "name": "Round 6",
+      "bestOf": 3,
+      "matches": []
+    }
+  ]
+};
+/* ===================================================================== */
+
+const MAPS = ["Abyss","Bind","Corrode","Haven","Lotus","Summit","Sunset"];
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+function matchCard(m, bo){
+  const card = el("div","match");
+  [["a",1],["b",2]].forEach(([k,i])=>{
+    const r = el("div","row" + (m.winner ? (m.winner===i ? " w" : " l") : ""));
+    r.append(el("span","name",m[k]));
+    r.append(el("span","res", m.winner ? (m.winner===i ? "W" : "L") : ""));
+    card.append(r);
+  });
+  const meta = el("div","meta");
+  meta.append(el("span","", bo ? "Bo"+bo : ""));
+  meta.append(el("span","", m.score ? m.score : (m.winner ? "" : "Upcoming")));
+  card.append(meta);
+  return card;
+}
+
+/* Swiss standings */
+const swissTeams = [];
+DATA.swiss[0].matches.forEach(m => swissTeams.push(m.a, m.b));
+const rec = Object.fromEntries(swissTeams.map(t => [t,{w:0,l:0}]));
+DATA.swiss.forEach(r => r.matches.forEach(m => {
+  if (!m.winner) return;
+  const W = m.winner===1 ? m.a : m.b, L = m.winner===1 ? m.b : m.a;
+  if (rec[W]) rec[W].w++; if (rec[L]) rec[L].l++;
+}));
+const status = t => { const {w,l} = rec[t];
+  if ((w>=4 && l===0) || (w>=5 && l===1)) return "q";
+  if (l>=2) return "out"; return ""; };
+const order = [...swissTeams].sort((x,y)=>{
+  const a=rec[x], b=rec[y], rank=s=>s==="q"?0:s==="out"?2:1;
+  return rank(status(x))-rank(status(y)) || a.l-b.l || b.w-a.w || x.localeCompare(y,undefined,{sensitivity:"base"});
+});
+const tb = $("#standings");
+order.forEach((t,i)=>{
+  const s = status(t), tr = el("tr", s);
+  tr.append(el("td","n",i+1), el("td","",t), el("td","rec",rec[t].w+"-"+rec[t].l));
+  const td = el("td"); if (s) td.append(el("span","badge "+(s==="q"?"b-q":"b-out"), s==="q"?"Q":"OUT")); tr.append(td);
+  tb.append(tr);
+});
+
+/* Swiss rounds */
+const rounds = $("#rounds");
+DATA.swiss.forEach((r,i)=>{
+  const h = el("h2","",r.name); h.append(el("span","note"," · Bo"+r.bestOf)); rounds.append(h);
+  if (!r.matches.length){ rounds.append(el("div","empty","Pairings not announced yet")); return; }
+  const g = el("div","matches"); r.matches.forEach(m=>g.append(matchCard(m,r.bestOf))); rounds.append(g);
+});
+
+/* Knockout */
+DATA.r128.forEach(m=>$("#r128").append(matchCard(m,3)));
+DATA.r256.forEach(m=>$("#r256").append(matchCard(m,1)));
+const allR256 = new Set(); DATA.r128.forEach(m=>{allR256.add(m.a);allR256.add(m.b)});
+DATA.r256.forEach(m=>{allR256.add(m.a);allR256.add(m.b)});
+$("#r256note").textContent = `${DATA.r256.length} matches were played; the other ${DATA.r128.length*2 - DATA.r256.length} teams received a bye to the Round of 128.`;
+
+/* Teams + where they finished */
+const stageOf = {};
+DATA.r256.forEach(m=>{ if (m.winner) stageOf[m.winner===1?m.b:m.a] = "Round of 256"; });
+DATA.r128.forEach(m=>{ if (m.winner) stageOf[m.winner===1?m.b:m.a] = "Round of 128"; });
+swissTeams.forEach(t=>{ const s=status(t); stageOf[t] = s==="q" ? "Playoffs" : s==="out" ? "Swiss "+rec[t].w+"-"+rec[t].l : "Swiss Stage"; });
+const allTeams = [...allR256].sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:"base"}));
+const tl = $("#teamlist");
+function drawTeams(q=""){
+  tl.textContent="";
+  allTeams.filter(t=>t.toLowerCase().includes(q.toLowerCase())).forEach(t=>{
+    const d = el("div","team"); d.append(el("span","",t));
+    const s = stageOf[t]||"";
+    const cls = s==="Playoffs" ? "b-q" : s==="Swiss Stage" ? "b-live" : "b-out";
+    d.append(el("span","badge "+cls, s==="Swiss Stage" ? "Alive" : s ? "Out · "+s : ""));
+    tl.append(d);
+  });
+}
+drawTeams(); $("#search").addEventListener("input",e=>drawTeams(e.target.value));
+
+/* Overview bits */
+$("#c-teams").textContent = allTeams.length;
+$("#c-upd").textContent = DATA.updated;
+MAPS.forEach(m=>$("#maps").append(el("span","map",m)));
+const alive = swissTeams.filter(t=>status(t)==="").length;
+const q = swissTeams.filter(t=>status(t)==="q").length;
+[[allTeams.length,"Teams"],[64,"In Swiss Stage"],[alive,"Still alive"],[q+" / 8","Qualified"]].forEach(([v,l])=>{
+  const s=el("div","stat"); s.append(el("div","v",v), el("div","l",l)); $("#stats").append(s);
+});
+
+/* Tabs */
+const tabs=[...document.querySelectorAll(".tab")];
+function show(id){ tabs.forEach(t=>t.setAttribute("aria-selected", t.dataset.t===id));
+  document.querySelectorAll("section").forEach(s=>s.hidden = s.id!==id);
+  try{ history.replaceState(null,"","#"+id) }catch(e){} }
+tabs.forEach(t=>t.addEventListener("click",()=>{ show(t.dataset.t);
+  const top = document.querySelector("nav").offsetTop; if (window.scrollY > top) window.scrollTo({top}); }));
+show(["overview","swiss","knockout","teams"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "overview");
+</script>
+</body>
+</html>
