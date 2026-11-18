@@ -109,6 +109,9 @@ details .inner{padding:0 12px 12px}
 .subtab[aria-selected=true] .cnt{color:var(--accent);opacity:1}
 .rpanel[hidden]{display:none}
 .rpanel>.note{margin:4px 0 10px}
+.pool{margin:16px 0 8px;text-transform:none;letter-spacing:0;color:var(--text);font-size:15px}
+.pool .note{font-weight:500}
+.rpanel .empty{margin-top:12px}
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .themebtn{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:999px;
   background:var(--panel);border:1px solid var(--line);color:var(--text);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
@@ -222,7 +225,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
    To add a Swiss round, put its matches in that round's "matches" list.
    ===================================================================== */
 const DATA = {
-  "updated": "18 Nov 2026, 4:38 PM IST",
+  "updated": "18 Nov 2026, 5:02 PM IST",
   "r256": [
     { "a": "Libertes Esports", "b": "DarkxLight New gen", "winner": 2, "score": "" },
     { "a": "Cl0wns", "b": "ChaosHunters", "winner": 2, "score": "" },
@@ -348,7 +351,24 @@ const DATA = {
     {
       "name": "Round 2",
       "bestOf": 1,
-      "matches": []
+      "matches": [
+        { "a": "GodLike Esports", "b": "Fambruh", "winner": 0, "score": "" },
+        { "a": "Revenant XSpark", "b": "Bengal Mafia", "winner": 0, "score": "" },
+        { "a": "Bleed Blue Gaming", "b": "Kryon Esports", "winner": 0, "score": "" },
+        { "a": "TEAM ACHIEVERS", "b": "Armaros", "winner": 0, "score": "" },
+        { "a": "Vision Esports", "b": "RANKERS", "winner": 0, "score": "" },
+        { "a": "Zeroplus Esports", "b": "Lore Accurate", "winner": 0, "score": "" },
+        { "a": "GOC Esports", "b": "Reborn Leaf", "winner": 0, "score": "" },
+        { "a": "Bankai", "b": "THE IGNYTORS", "winner": 0, "score": "" },
+        { "a": "SIGN Esports", "b": "Team Hope", "winner": 0, "score": "" },
+        { "a": "AvocadosAtLaw", "b": "ZEXAR ESPORTS", "winner": 0, "score": "" },
+        { "a": "Damal Dumil", "b": "BeyondMeasures", "winner": 0, "score": "" },
+        { "a": "NEWGEN ESPORTS", "b": "Trigger Point Esports", "winner": 0, "score": "" },
+        { "a": "Loadshedding", "b": "REVENANT", "winner": 0, "score": "" },
+        { "a": "The Winner Effect", "b": "Lexious Gaming", "winner": 0, "score": "" },
+        { "a": "DarkxLight Esports", "b": "PROPHETIC", "winner": 0, "score": "" },
+        { "a": "TIMEKEEPERS ACADEMY", "b": "Arrancar", "winner": 0, "score": "" }
+      ]
     },
     {
       "name": "Round 3",
@@ -440,7 +460,23 @@ DATA.swiss.forEach((r,i)=>{
   const p = el("div","rpanel");
   p.append(el("p","note", r.matches.length ? `Bo${r.bestOf} · ${done} of ${r.matches.length} matches played` : `Bo${r.bestOf}`));
   if (!r.matches.length) p.append(el("div","empty","Pairings not announced yet"));
-  else { const g = el("div","matches"); r.matches.forEach(m=>g.append(matchCard(m,r.bestOf))); p.append(g); }
+  else if (i===0) { const g = el("div","matches"); r.matches.forEach(m=>g.append(matchCard(m,r.bestOf))); p.append(g); }
+  else {
+    /* group by the record teams had going into this round */
+    const before = Object.fromEntries(swissTeams.map(t=>[t,{w:0,l:0}]));
+    DATA.swiss.slice(0,i).forEach(pr=>pr.matches.forEach(m=>{ if(!m.winner) return;
+      const W=m.winner===1?m.a:m.b, L=m.winner===1?m.b:m.a; before[W].w++; before[L].l++; }));
+    const pools = {};
+    r.matches.forEach(m=>{ const k = before[m.a].w+"-"+before[m.a].l; (pools[k] ||= []).push(m); });
+    Object.keys(pools).sort((x,y)=>{ const [aw,al]=x.split("-").map(Number),[bw,bl]=y.split("-").map(Number); return (bw-bl)-(aw-al) || bw-aw; })
+      .forEach(k=>{
+        const ms = pools[k], d = ms.filter(m=>m.winner).length;
+        const h = el("h3","pool", k+" pool"); h.append(el("span","note"," · "+d+"/"+ms.length+" played")); p.append(h);
+        const g = el("div","matches"); ms.forEach(m=>g.append(matchCard(m,r.bestOf))); p.append(g);
+      });
+    const pending = swissTeams.filter(t=>before[t].l<2 && !((before[t].w>=4&&before[t].l===0)||(before[t].w>=5&&before[t].l===1))).length/2 - r.matches.length;
+    if (pending>0) p.append(el("div","empty", pending+" more matches to be drawn"));
+  }
   rounds.append(p); panels.push(p);
 });
 function pick(i){
