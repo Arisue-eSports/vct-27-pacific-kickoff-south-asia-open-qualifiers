@@ -74,6 +74,7 @@ h3{font-size:15px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;
 .match .row{display:flex;align-items:center;gap:8px;padding:8px 12px}
 .match .row+.row{border-top:1px solid var(--line)}
 .match .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.match .name.bye{color:var(--muted);font-style:italic}
 .match .res{font-size:12px;font-weight:700;min-width:22px;text-align:right}
 .row.w{background:var(--win-dim)} .row.w .name{font-weight:700} .row.w .res{color:var(--win)}
 .row.l .name{color:var(--muted)} .row.l .res{color:var(--loss)}
@@ -89,7 +90,7 @@ td.rec{font-variant-numeric:tabular-nums;font-weight:700}
 tr.q td{background:var(--win-dim)} tr.out td{color:var(--muted)}
 .badge{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px}
 .b-q{background:var(--win-dim);color:var(--win)} .b-out{background:var(--loss-dim);color:var(--loss)}
-.b-live{background:var(--accent-dim);color:var(--accent)} .b-gold{background:rgba(250,204,21,.15);color:var(--gold)}
+.b-live{background:var(--accent-dim);color:var(--accent)} .b-nd{background:var(--panel2);color:var(--muted);border:1px solid var(--line)} .badge.sub{margin-left:4px} tr.nd td{color:var(--muted)} .b-gold{background:rgba(250,204,21,.15);color:var(--gold)}
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;font-size:13px;color:var(--muted)}
 details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px}
 details summary{cursor:pointer;padding:12px 16px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
@@ -117,6 +118,10 @@ details .inner{padding:0 12px 12px}
   background:var(--panel);border:1px solid var(--line);color:var(--text);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .themebtn:focus-visible,.tab:focus-visible,.subtab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .themebtn svg{width:16px;height:16px}
+.notes{border-left:3px solid var(--gold);margin:4px 0 14px}
+.notes summary{font-size:15px}
+.notes ul{margin:0 0 6px;padding-left:22px} .notes li{margin:6px 0;font-size:14px}
+.notes .note{margin:6px 4px 0}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 </style>
 </head>
@@ -181,11 +186,13 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 
 <!-- SWISS -->
 <section id="swiss" hidden>
+  <div id="notes"></div>
   <div id="rounds"></div>
   <div class="rpanel" id="standingsPanel">
   <div class="legend">
     <span><span class="badge b-q">Q</span> Qualified for Playoffs</span>
     <span><span class="badge b-out">OUT</span> Eliminated</span>
+    <span><span class="badge b-nd">Not in draw</span> / <span class="badge b-nd">See notes</span> explained in Bracket notes</span>
   </div>
   <div class="tablewrap"><table>
     <thead><tr><th>#</th><th>Team</th><th>W-L</th><th>Status</th></tr></thead>
@@ -225,7 +232,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
    To add a Swiss round, put its matches in that round's "matches" list.
    ===================================================================== */
 const DATA = {
-  "updated": "18 Nov 2026, 5:02 PM IST",
+  "updated": "18 Nov 2026, 5:22 PM IST",
   "r256": [
     { "a": "Libertes Esports", "b": "DarkxLight New gen", "winner": 2, "score": "" },
     { "a": "Cl0wns", "b": "ChaosHunters", "winner": 2, "score": "" },
@@ -367,7 +374,23 @@ const DATA = {
         { "a": "Loadshedding", "b": "REVENANT", "winner": 0, "score": "" },
         { "a": "The Winner Effect", "b": "Lexious Gaming", "winner": 0, "score": "" },
         { "a": "DarkxLight Esports", "b": "PROPHETIC", "winner": 0, "score": "" },
-        { "a": "TIMEKEEPERS ACADEMY", "b": "Arrancar", "winner": 0, "score": "" }
+        { "a": "TIMEKEEPERS ACADEMY", "b": "Arrancar", "winner": 0, "score": "" },
+        { "a": "Genesis Guild", "b": "Valx Esports", "winner": 0, "score": "" },
+        { "a": "T69", "b": "RedViperz", "winner": 0, "score": "" },
+        { "a": "上自", "b": "Team Instinct", "winner": 0, "score": "" },
+        { "a": "Golden Dawn", "b": "Ganggg", "winner": 0, "score": "" },
+        { "a": "MGX eSPORTS", "b": "Team Hxpe", "winner": 0, "score": "" },
+        { "a": "ARAN ESPORTS", "b": "NYNE", "winner": 0, "score": "" },
+        { "a": "Humble Gods", "b": "Xcrew", "winner": 0, "score": "" },
+        { "a": "Reckless Esports", "b": "ZENO", "winner": 0, "score": "" },
+        { "a": "Mangalore Mayhem", "b": "CARRY US PLEASE", "winner": 0, "score": "" },
+        { "a": "Only Frens", "b": "BYE", "winner": 1, "score": "" },
+        { "a": "EvilRage Esports", "b": "Team XII", "winner": 0, "score": "" },
+        { "a": "FNSes Kittens", "b": "STAR CHASERS", "winner": 0, "score": "" },
+        { "a": "WHE CRACKED", "b": "Xcalibur", "winner": 0, "score": "" },
+        { "a": "Novena", "b": "Backlog Warriors", "winner": 0, "score": "" },
+        { "a": "DarkxLight New gen", "b": "Team Rush", "winner": 0, "score": "" },
+        { "a": "BlackOrder", "b": "YeahWeLost", "winner": 0, "score": "" }
       ]
     },
     {
@@ -390,6 +413,26 @@ const DATA = {
       "bestOf": 3,
       "matches": []
     }
+  ],
+  "changes": [
+    {
+      "type": "replace",
+      "out": "SupleXure",
+      "in": "Team Hxpe",
+      "round": 2
+    },
+    {
+      "type": "absent",
+      "team": "CheemsEsports",
+      "round": 2
+    }
+  ],
+  "byeCountsAsWin": true,
+  "notes": [
+    "Round 2, 0-1 pool: Team Hxpe is drawn against MGX eSPORTS. Team Hxpe was eliminated in the Round of 128 and did not play in Swiss Round 1. They are shown here in the 0-1 pool with a 0-1 record, as drawn.",
+    "Round 2, 0-1 pool: SupleXure (0-1 after Round 1) does not appear in the Round 2 draw.",
+    "Round 2, 0-1 pool: CheemsEsports (0-1 after Round 1) does not appear in the Round 2 draw.",
+    "Round 2, 0-1 pool: Only Frens received a bye, which counts as a win."
   ]
 };
 /* ===================================================================== */
@@ -401,41 +444,71 @@ const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls)
 function matchCard(m, bo){
   const card = el("div","match");
   [["a",1],["b",2]].forEach(([k,i])=>{
-    const r = el("div","row" + (m.winner ? (m.winner===i ? " w" : " l") : ""));
-    r.append(el("span","name",m[k]));
-    r.append(el("span","res", m.winner ? (m.winner===i ? "W" : "L") : ""));
+    const r = el("div","row" + (m[k]==="BYE" ? "" : m.winner ? (m.winner===i ? " w" : " l") : ""));
+    r.append(el("span","name"+(m[k]==="BYE"?" bye":""),m[k]));
+    r.append(el("span","res", m[k]==="BYE" ? "" : m.winner ? (m.winner===i ? "W" : "L") : ""));
     card.append(r);
   });
   const meta = el("div","meta");
   meta.append(el("span","", bo ? "Bo"+bo : ""));
-  meta.append(el("span","", m.score ? m.score : (m.winner ? "" : "Upcoming")));
+  meta.append(el("span","", isBye(m) ? (m.winner ? "Bye · counts as a win" : "Bye") : m.score ? m.score : (m.winner ? "" : "Upcoming")));
   card.append(meta);
   return card;
 }
 
 /* Swiss standings */
+const CH = DATA.changes || [];
 const swissTeams = [];
 DATA.swiss[0].matches.forEach(m => swissTeams.push(m.a, m.b));
-const rec = Object.fromEntries(swissTeams.map(t => [t,{w:0,l:0}]));
-DATA.swiss.forEach(r => r.matches.forEach(m => {
-  if (!m.winner) return;
-  const W = m.winner===1 ? m.a : m.b, L = m.winner===1 ? m.b : m.a;
-  if (rec[W]) rec[W].w++; if (rec[L]) rec[L].l++;
-}));
-const status = t => { const {w,l} = rec[t];
+CH.filter(c=>c.type==="replace").forEach(c=>{ if(!swissTeams.includes(c.in)) swissTeams.push(c.in); });
+function isBye(m){ return m.a==="BYE" || m.b==="BYE"; }
+/* record of every team going into round index i (0-based); i = number of rounds counted */
+function recordsBefore(i){
+  const R = Object.fromEntries(swissTeams.map(t=>[t,{w:0,l:0}]));
+  DATA.swiss.slice(0,i).forEach((r,ri)=>{
+    CH.filter(c=>c.type==="replace" && c.round===ri+1).forEach(c=>{ R[c.in] = {...R[c.out]}; });
+    r.matches.forEach(m=>{
+      if (isBye(m)) { const t = m.a==="BYE"?m.b:m.a; if (DATA.byeCountsAsWin===true) R[t].w++; return; }
+      if (!m.winner) return;
+      const W = m.winner===1?m.a:m.b, L = m.winner===1?m.b:m.a; R[W].w++; R[L].l++;
+    });
+  });
+  CH.filter(c=>c.type==="replace" && c.round===i+1).forEach(c=>{ R[c.in] = {...R[c.out]}; });
+  return R;
+}
+const rec = recordsBefore(DATA.swiss.length);
+/* teams that are no longer in the draw (replaced or absent) */
+const notInDraw = {};
+CH.forEach(c=>{ if (c.type==="replace") notInDraw[c.out]=c.round; if (c.type==="absent") notInDraw[c.team]=c.round; });
+const status = t => { if (notInDraw[t]) return "nd"; const {w,l} = rec[t];
   if ((w>=4 && l===0) || (w>=5 && l===1)) return "q";
   if (l>=2) return "out"; return ""; };
 const order = [...swissTeams].sort((x,y)=>{
-  const a=rec[x], b=rec[y], rank=s=>s==="q"?0:s==="out"?2:1;
+  const a=rec[x], b=rec[y], rank=s=>s==="q"?0:s===""?1:s==="out"?2:3;
   return rank(status(x))-rank(status(y)) || a.l-b.l || b.w-a.w || x.localeCompare(y,undefined,{sensitivity:"base"});
 });
 const tb = $("#standings");
 order.forEach((t,i)=>{
   const s = status(t), tr = el("tr", s);
   tr.append(el("td","n",i+1), el("td","",t), el("td","rec",rec[t].w+"-"+rec[t].l));
-  const td = el("td"); if (s) td.append(el("span","badge "+(s==="q"?"b-q":"b-out"), s==="q"?"Q":"OUT")); tr.append(td);
+  const td = el("td");
+  if (s==="nd") td.append(el("span","badge b-nd","Not in R"+notInDraw[t]+" draw"));
+  else if (s) td.append(el("span","badge "+(s==="q"?"b-q":"b-out"), s==="q"?"Q":"OUT"));
+  if (CH.some(c=>c.type==="replace" && c.in===t)) td.append(el("span","badge b-nd sub","See notes"));
+  tr.append(td);
   tb.append(tr);
 });
+
+/* Bracket notes */
+if ((DATA.notes||[]).length){
+  const box = el("details","notes");
+  const sm = el("summary"); sm.append(el("span","",`Bracket notes (${DATA.notes.length})`)); box.append(sm);
+  const inner = el("div","inner");
+  const ul = el("ul"); DATA.notes.forEach(n=>ul.append(el("li","",n))); inner.append(ul);
+  inner.append(el("p","note","These notes describe the official bracket sheets as published. Reasons for changes have not been confirmed here."));
+  box.append(inner);
+  $("#notes").append(box);
+}
 
 /* Swiss rounds as tabs */
 const rounds = $("#rounds");
@@ -452,29 +525,30 @@ const panels = [];
 }
 const firstRound = panels.length;
 DATA.swiss.forEach((r,i)=>{
-  const done = r.matches.filter(m=>m.winner).length;
+  const done = r.matches.filter(m=>m.winner && !isBye(m)).length, nb = r.matches.filter(isBye).length, tot = r.matches.length - nb;
   const b = el("button","subtab"); b.setAttribute("role","tab");
   b.append(el("span","",r.name));
-  b.append(el("span","cnt", r.matches.length ? `${done}/${r.matches.length}` : "TBD"));
+  b.append(el("span","cnt", r.matches.length ? `${done}/${tot}` : "TBD"));
   b.addEventListener("click",()=>pick(firstRound+i)); bar.append(b);
   const p = el("div","rpanel");
-  p.append(el("p","note", r.matches.length ? `Bo${r.bestOf} · ${done} of ${r.matches.length} matches played` : `Bo${r.bestOf}`));
+  p.append(el("p","note", r.matches.length ? `Bo${r.bestOf} · ${done} of ${tot} matches played` + (nb ? ` · ${nb} bye` : "") : `Bo${r.bestOf}`));
   if (!r.matches.length) p.append(el("div","empty","Pairings not announced yet"));
   else if (i===0) { const g = el("div","matches"); r.matches.forEach(m=>g.append(matchCard(m,r.bestOf))); p.append(g); }
   else {
     /* group by the record teams had going into this round */
-    const before = Object.fromEntries(swissTeams.map(t=>[t,{w:0,l:0}]));
-    DATA.swiss.slice(0,i).forEach(pr=>pr.matches.forEach(m=>{ if(!m.winner) return;
-      const W=m.winner===1?m.a:m.b, L=m.winner===1?m.b:m.a; before[W].w++; before[L].l++; }));
+    const before = recordsBefore(i);
     const pools = {};
-    r.matches.forEach(m=>{ const k = before[m.a].w+"-"+before[m.a].l; (pools[k] ||= []).push(m); });
+    r.matches.forEach(m=>{ const t = m.a==="BYE"?m.b:m.a; const k = before[t].w+"-"+before[t].l; (pools[k] ||= []).push(m); });
     Object.keys(pools).sort((x,y)=>{ const [aw,al]=x.split("-").map(Number),[bw,bl]=y.split("-").map(Number); return (bw-bl)-(aw-al) || bw-aw; })
       .forEach(k=>{
-        const ms = pools[k], d = ms.filter(m=>m.winner).length;
-        const h = el("h3","pool", k+" pool"); h.append(el("span","note"," · "+d+"/"+ms.length+" played")); p.append(h);
+        const ms = pools[k], d = ms.filter(m=>m.winner && !isBye(m)).length, t2 = ms.filter(m=>!isBye(m)).length;
+        const h = el("h3","pool", k+" pool"); h.append(el("span","note"," · "+d+"/"+t2+" played")); p.append(h);
         const g = el("div","matches"); ms.forEach(m=>g.append(matchCard(m,r.bestOf))); p.append(g);
       });
-    const pending = swissTeams.filter(t=>before[t].l<2 && !((before[t].w>=4&&before[t].l===0)||(before[t].w>=5&&before[t].l===1))).length/2 - r.matches.length;
+    const gone = t => notInDraw[t] && notInDraw[t] <= i+1;
+    const activeN = swissTeams.filter(t=>!gone(t) && before[t].l<2 && !((before[t].w>=4&&before[t].l===0)||(before[t].w>=5&&before[t].l===1))).length;
+    const inRound = r.matches.reduce((n,m)=>n+(m.a!=="BYE")+(m.b!=="BYE"),0);
+    const pending = Math.ceil((activeN - inRound)/2);
     if (pending>0) p.append(el("div","empty", pending+" more matches to be drawn"));
   }
   rounds.append(p); panels.push(p);
@@ -497,7 +571,7 @@ $("#r256note").textContent = `${DATA.r256.length} matches were played; the other
 const stageOf = {};
 DATA.r256.forEach(m=>{ if (m.winner) stageOf[m.winner===1?m.b:m.a] = "Round of 256"; });
 DATA.r128.forEach(m=>{ if (m.winner) stageOf[m.winner===1?m.b:m.a] = "Round of 128"; });
-swissTeams.forEach(t=>{ const s=status(t); stageOf[t] = s==="q" ? "Playoffs" : s==="out" ? "Swiss "+rec[t].w+"-"+rec[t].l : "Swiss Stage"; });
+swissTeams.forEach(t=>{ const s=status(t); stageOf[t] = s==="q" ? "Playoffs" : s==="out" ? "Swiss "+rec[t].w+"-"+rec[t].l : s==="nd" ? "ND" : "Swiss Stage"; });
 const allTeams = [...allR256].sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:"base"}));
 const tl = $("#teamlist");
 function drawTeams(q=""){
@@ -505,8 +579,8 @@ function drawTeams(q=""){
   allTeams.filter(t=>t.toLowerCase().includes(q.toLowerCase())).forEach(t=>{
     const d = el("div","team"); d.append(el("span","",t));
     const s = stageOf[t]||"";
-    const cls = s==="Playoffs" ? "b-q" : s==="Swiss Stage" ? "b-live" : "b-out";
-    d.append(el("span","badge "+cls, s==="Swiss Stage" ? "Alive" : s ? "Out · "+s : ""));
+    const cls = s==="Playoffs" ? "b-q" : s==="Swiss Stage" ? "b-live" : s==="ND" ? "b-nd" : "b-out";
+    d.append(el("span","badge "+cls, s==="Swiss Stage" ? "Alive" : s==="ND" ? "Not in R"+notInDraw[t]+" draw" : s ? "Out · "+s : ""));
     tl.append(d);
   });
 }
@@ -518,7 +592,7 @@ $("#c-upd").textContent = DATA.updated;
 MAPS.forEach(m=>$("#maps").append(el("span","map",m)));
 const alive = swissTeams.filter(t=>status(t)==="").length;
 const q = swissTeams.filter(t=>status(t)==="q").length;
-[[allTeams.length,"Teams"],[64,"In Swiss Stage"],[alive,"Still alive"],[q+" / 8","Qualified"]].forEach(([v,l])=>{
+[[allTeams.length,"Teams"],[swissTeams.length,"In Swiss Stage"],[alive,"Still alive"],[q+" / 8","Qualified"]].forEach(([v,l])=>{
   const s=el("div","stat"); s.append(el("div","v",v), el("div","l",l)); $("#stats").append(s);
 });
 
